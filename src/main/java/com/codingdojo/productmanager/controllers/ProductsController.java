@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codingdojo.productmanager.models.Product;
 import com.codingdojo.productmanager.services.ProductService;
@@ -25,6 +26,14 @@ public class ProductsController {
 		this.productService = productService;
 	}
 	
+	@GetMapping("/search")
+	public String getAtrist(@RequestParam(value="title", required=false) String productName, Model model) {
+		System.out.println("productName: " + productName);
+		List<Product> products = this.productService.getProductsByTitle(productName);
+		model.addAttribute("products", products);
+		return "products/search.jsp";
+	}
+		
 	@GetMapping("")
 	public String showProducts(Model model) {
 		System.out.println("ProductsController > showProducts(), get all products");

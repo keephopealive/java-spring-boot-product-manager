@@ -1,10 +1,12 @@
 package com.codingdojo.productmanager.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.codingdojo.productmanager.models.Category;
 import com.codingdojo.productmanager.models.Product;
 import com.codingdojo.productmanager.repositories.ProductRepository;
 
@@ -51,6 +53,26 @@ public class ProductService {
 		databaseProduct.setQty(product.getQty());
 		this.productRepository.save(databaseProduct);
 		return true;
+	}
+	
+	public List<Product> getProductsByTitle(String productName) {
+		List<Product> products = this.productRepository.findByTitleContaining(productName);
+		System.out.println("Products (inService: " + products);
+		return products;
+	}
+
+	public List<Product> getAllProductsNotInCategory(Category category) {
+		//	return this.productRepository.findByNotIn(category.getProducts())
+		ArrayList<Long> product_ids = new ArrayList<Long>();
+		for(Product product : category.getProducts()) {
+			product_ids.add(product.getId());
+		}
+		
+		if(product_ids.isEmpty()) {
+			return (List<Product>) this.productRepository.findAll();
+		} else {
+			return this.productRepository.findByIdNotIn(product_ids);
+		}
 	}
 	
 }
